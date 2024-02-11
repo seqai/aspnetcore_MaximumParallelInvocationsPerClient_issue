@@ -1,0 +1,38 @@
+﻿@page "/"
+
+@inject FileService FileService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<InputFile OnChange="UploadFile" />
+<ul>
+@foreach (var file in uploadedFiles)
+{
+    <li>@file</li>
+}
+</ul>
+
+@code
+{
+    private List<string> uploadedFiles = new List<string>();
+    private string selectedFile;
+    private string errorMessage;
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var result = await FileService.UploadFileAsync(e.File);
+            uploadedFiles.Add($"File uploaded {e.File.Name}, hash: {result}");
+        }
+        else
+        {
+            errorMessage = "No file selected";
+        }
+    }
+}
